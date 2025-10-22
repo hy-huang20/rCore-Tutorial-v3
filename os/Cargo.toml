@@ -7,7 +7,13 @@ edition = "2024"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-riscv = { git = "https://github.com/rcore-os/riscv", features = ["inline-asm"] }
+embassy-executor = { version = "0.3.2", features = ["arch-riscv32", "nightly", "executor-thread"] }
+static_cell = "2.0.0"
+riscv = { version = "0.10.1", features = ["critical-section-single-hart"] }
+# 如果已经依赖了 rcore 的 riscv 
+# 可以 将其替换为下面的依赖, 同时修改 trap/context 中 riscv 的路径为 riscv_asm
+riscv_asm = { git = "https://github.com/lighklife/riscv-asm", features = ["inline-asm"] }
+# riscv = { git = "https://github.com/rcore-os/riscv", features = ["inline-asm"] }
 lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
 buddy_system_allocator = "0.6"
 bitflags = "1.2.1"

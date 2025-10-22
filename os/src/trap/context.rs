@@ -1,4 +1,4 @@
-use riscv::register::sstatus::{self, SPP, Sstatus};
+use riscv_asm::register::sstatus::{self, SPP, Sstatus};
 
 #[repr(C)]
 #[derive(Debug)]

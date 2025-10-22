@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 #![feature(alloc_error_handler)]
+#![feature(type_alias_impl_trait)]
 
 //use crate::drivers::{GPU_DEVICE, KEYBOARD_DEVICE, MOUSE_DEVICE, INPUT_CONDVAR};
 use crate::drivers::{GPU_DEVICE, KEYBOARD_DEVICE, MOUSE_DEVICE};
@@ -54,8 +55,37 @@ lazy_static! {
         unsafe { UPIntrFreeCell::new(false) };
 }
 
+use embassy_executor::Executor;
+use embassy_executor::Spawner;
+use static_cell::StaticCell;
+
+static EXECUTOR: StaticCell<Executor> = StaticCell::new();
+
 #[unsafe(no_mangle)]
 pub fn rust_main() -> ! {
+    let executor = EXECUTOR.init(Executor::new());
+    executor.run(|spawner| {
+        spawner.spawn(kernel_start(spawner)).unwrap();
+    });
+}
+
+async fn test(){
+    let f1 = async {
+        println!("========= async test f1 ==============");
+    };
+    let f2 = async {
+        println!("========= async test f2 ==============");
+    };
+    let f3 = async {
+        println!("========= async test f3 ==============");
+    };
+    f3.await;
+    f2.await;
+    f1.await;
+}
+
+#[embassy_executor::task]
+async fn kernel_start(spawner: Spawner) {
     clear_bss();
     logging::init();
     mm::init();
@@ -74,6 +104,10 @@ pub fn rust_main() -> ! {
     fs::list_apps();
     task::add_initproc();
     *DEV_NON_BLOCKING_ACCESS.exclusive_access() = true;
-    task::run_tasks();
+    // 测试异步调用
+    test().await;
+
+    // 开始线程调度
+    task::run_tasks().await;
     panic!("Unreachable in rust_main!");
 }
