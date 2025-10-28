@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["clear_bss","kernel_start","rust_main","test"],"macro":["print","println"],"mod":["board","config","console","drivers","fs","lang_items","logging","mm","net","sbi","sync","syscall","task","timer","trap"],"static":["EXECUTOR"],"struct":["DEV_NON_BLOCKING_ACCESS"]};
