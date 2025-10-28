@@ -1,3 +1,5 @@
+cargo-features = ["profile-rustflags"]
+
 [package]
 name = "os"
 version = "0.1.0"
@@ -29,3 +31,4 @@ sbi-rt = { version = "0.0.2", features = ["legacy"] }
 
 [profile.release]
 debug = true
+rustflags = ["-Z", "macro-backtrace"]
